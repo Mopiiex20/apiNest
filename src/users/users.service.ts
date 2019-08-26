@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { users } from './users.entity';
+import { users, users_roles } from './users.entity';
 import * as bcrypt from "bcrypt"
 import * as jwt from "jwt-then";
 
@@ -13,7 +13,10 @@ interface User {
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject('USERS_REPOSITORY') private readonly USERS_REPOSITORY: typeof users) { }
+
+    @Inject('USERS_REPOSITORY') private readonly USERS_REPOSITORY: typeof users
+
+  ) { }
 
   async findAll(res): Promise<users[]> {
     try {

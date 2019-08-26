@@ -1,4 +1,4 @@
-import { auth } from './auth.entity';
+
 import { users } from '../users/users.entity';
 
 export const authProviders = [
