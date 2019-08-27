@@ -42,7 +42,7 @@ export class users extends Model<users> {
 
 
   @BelongsToMany(() => roles, () => users_roles)
-  datauser: roles[];
+  roleId: users_roles[];
 
 }
 

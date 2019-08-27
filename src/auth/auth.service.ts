@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from "bcrypt"
 import { users, roles, users_roles } from '../users/users.entity';
 import { JwtService } from '@nestjs/jwt';
+import { loadPartialConfig } from '@babel/core';
 
 @Injectable()
 export class AuthService {
@@ -33,14 +34,20 @@ export class AuthService {
 
   async login(user: any) {
 
-    const roles1: any = await this.AUTH_REPOSITORY.findAll<users>({
+    let permissions: any[]=[];
+
+    await this.AUTH_REPOSITORY.findAll<users>({
+      where: { id: user.id },
       include: [{
         model: roles,
       }]
-    })
+    }).then((rolen: any) => rolen.forEach(el => {
+      el.roleId.forEach(element => {
+        permissions.push(element.dataValues.roleName);
+      });
+    }))
 
-    console.log(roles1);
-
+    console.log(permissions);
 
 
     const isAdmin: boolean = (user.roleId === 0 ? true : false);
@@ -49,7 +56,7 @@ export class AuthService {
       firstName: user.firstName,
       age: user.age,
       avatar: user.avatar,
-      isAdmin: isAdmin,
+      permissions: permissions,
       id: user.id
     };
 
