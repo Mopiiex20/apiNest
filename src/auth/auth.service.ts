@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from "bcrypt"
 import { users, roles, users_roles } from '../users/users.entity';
 import { JwtService } from '@nestjs/jwt';
-import { loadPartialConfig } from '@babel/core';
+import { HttpException } from "@nestjs/common"
 
 @Injectable()
 export class AuthService {
@@ -17,24 +17,22 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<any> {
 
+
     const user: any = await this.AUTH_REPOSITORY.findOne<users>({ where: { email: email } })
-
-    console.log(user.get("datauser"));
-
     if (!user) {
-      return null
+      throw new HttpException('User not found', 404);
     }
 
     const matchPasswords = await bcrypt.compare(password, user.dataValues.password);
     if (user && matchPasswords) {
       return user.dataValues;
-    }
-    return null;
+    } else throw new HttpException('Email or password is incorect!', 401);
+
   }
 
   async login(user: any) {
 
-    let permissions: any[]=[];
+    let permissions: any[] = [];
 
     await this.AUTH_REPOSITORY.findAll<users>({
       where: { id: user.id },
@@ -61,7 +59,7 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload)
+      access_token: await this.jwtService.sign(payload)
     };
   }
 

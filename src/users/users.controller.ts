@@ -29,7 +29,6 @@ export class UsersController {
         return this.usersService.delete(req, res);
     }
 
-    
 
     @Put('/:id')
     update(@Req() req: Request, @Res() res: Response): any {
