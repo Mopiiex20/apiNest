@@ -1,22 +1,28 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from "bcrypt"
-import { users, roles, users_roles } from '../users/users.entity';
+import { users, roles } from '../users/users.entity';
 import { JwtService } from '@nestjs/jwt';
 import { HttpException } from "@nestjs/common"
+import { ConfigService } from '../config/config.service';
+import * as jwtr from "jwt-then"
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly jwtService: JwtService,
-    @Inject('AUTH_REPOSITORY') private readonly AUTH_REPOSITORY: typeof users,
-    @Inject('ROLES_REPOSITORY') private readonly ROLES_REPOSITORY: typeof roles
 
-  ) { }
+  private test: any;
 
+  public jwtService: JwtService;
 
+  @Inject('AUTH_REPOSITORY') private readonly AUTH_REPOSITORY: typeof users
+
+  constructor(config: ConfigService) {
+
+    this.test = config.get('APP');
+  }
 
   async validateUser(email: string, password: string): Promise<any> {
 
+    console.log(this.test);
 
     const user: any = await this.AUTH_REPOSITORY.findOne<users>({ where: { email: email } })
     if (!user) {
@@ -26,7 +32,7 @@ export class AuthService {
     const matchPasswords = await bcrypt.compare(password, user.dataValues.password);
     if (user && matchPasswords) {
       return user.dataValues;
-    } else throw new HttpException('Email or password is incorect!', 401);
+    } else throw new UnauthorizedException;
 
   }
 
@@ -49,6 +55,7 @@ export class AuthService {
 
 
     const isAdmin: boolean = (user.roleId === 0 ? true : false);
+
     const payload = {
       username: user.email,
       firstName: user.firstName,
@@ -57,9 +64,12 @@ export class AuthService {
       permissions: permissions,
       id: user.id
     };
+    console.log(payload);
+    const access_token = await jwtr.sign(payload, "secret")
+    console.log(access_token);
 
     return {
-      access_token: await this.jwtService.sign(payload)
+      data: access_token
     };
   }
 

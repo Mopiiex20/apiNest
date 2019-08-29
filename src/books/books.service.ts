@@ -1,6 +1,7 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, HttpException } from '@nestjs/common';
 import { books } from './books.entity';
 import { Response } from 'express';
+
 
 @Injectable()
 export class BooksService {
@@ -8,9 +9,9 @@ export class BooksService {
     @Inject('BOOKS_REPOSITORY') private readonly BOOKS_REPOSITORY: typeof books) { }
 
   async findAll(): Promise<books[]> {
-    return await this.BOOKS_REPOSITORY.findAll<books>();
-    // return []
+    console.log('done');
 
+    return await this.BOOKS_REPOSITORY.findAll<books>();
   }
   async findOne(req): Promise<books> {
     const id = req.params.id
@@ -18,15 +19,31 @@ export class BooksService {
 
   }
 
+  async findBooksByTitle(req): Promise<books[]> {
+    const Sequelize = require('sequelize');
+    const title = req.params.title
+    console.log(title);
+    const Op = Sequelize.Op;
+    const books = await this.BOOKS_REPOSITORY.findAll<books>({ where:
+       { title: {
+        [Op.substring]: `${title}` 
+    } } });
+
+
+    return books
+
+
+  }
+
+
   async postBook(req): Promise<any> {
-    
+
     if (req.body.title) {
       console.log(req.body);
-      const res = "Post is done!"
       const book = req.body;
       await this.BOOKS_REPOSITORY.create<books>(book)
 
-      return res
+      return new HttpException('Add is done', 201);
 
     } else return "Requset body  is incorrect!"
 

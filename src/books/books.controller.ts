@@ -11,9 +11,14 @@ export class BooksController {
         return this.booksService.findAll();
     }
 
-    @Get('/:id')
-    findOne(@Req() req: Request): any {
-        return this.booksService.findOne(req);
+    // @Get('/:id')
+    // findOne(@Req() req: Request): any {
+    //     return this.booksService.findOne(req);
+    // }
+
+    @Get('/:title')
+    findBooksByTitle(@Req() req: Request): any {
+        return this.booksService.findBooksByTitle(req);
     }
 
     @Post()

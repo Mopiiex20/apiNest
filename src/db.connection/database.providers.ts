@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { books } from '../books/books.entity';
 import { users, users_roles, roles } from '../users/users.entity';
 
+
 export const databaseProviders = [
   {
     provide: 'SEQUELIZE',

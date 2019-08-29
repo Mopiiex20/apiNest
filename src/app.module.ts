@@ -17,9 +17,12 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
 import { JwtStrategy } from './users/jwt.strategy';
+import { ConfigModule } from './config/config.module';
 
 @Module({
-  imports: [DatabaseModule,
+  imports: [
+    ConfigModule,
+    DatabaseModule,
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
