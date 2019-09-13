@@ -13,9 +13,37 @@ export class BooksService {
 
     return await this.BOOKS_REPOSITORY.findAll<books>();
   }
+
   async findOne(req): Promise<books> {
-    const id = req.params.id
-    return await this.BOOKS_REPOSITORY.findOne<books>(id);
+    let book: any = await this.BOOKS_REPOSITORY.findOne<books>({ where: { _id: req.params.id } });
+    console.log(book);
+
+    return book
+
+  }
+
+
+  async updatBook(req): Promise<any> {
+
+    if (req.params.id) {
+      console.log(req.body);
+      const book = req.body;
+      await this.BOOKS_REPOSITORY.update<books>(book, { where: { _id: req.params.id } })
+
+      return new HttpException('Add is done', 200);
+
+    } else return "Requset body  is incorrect!"
+
+  }
+
+  async deleteBook(req): Promise<any> {
+
+    if (req.params.id) {
+      await this.BOOKS_REPOSITORY.destroy({ where: { _id: req.params.id } })
+
+      return new HttpException('Add is done', 200);
+
+    } else return "Requset body  is incorrect!"
 
   }
 
@@ -24,10 +52,14 @@ export class BooksService {
     const title = req.params.title
     console.log(title);
     const Op = Sequelize.Op;
-    const books = await this.BOOKS_REPOSITORY.findAll<books>({ where:
-       { title: {
-        [Op.substring]: `${title}` 
-    } } });
+    const books = await this.BOOKS_REPOSITORY.findAll<books>({
+      where:
+      {
+        title: {
+          [Op.substring]: `${title}`
+        }
+      }
+    });
 
 
     return books

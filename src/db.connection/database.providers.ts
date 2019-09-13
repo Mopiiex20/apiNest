@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { books } from '../books/books.entity';
 import { users, users_roles, roles } from '../users/users.entity';
-
+import env from '../config/config'
 
 export const databaseProviders = [
   {
@@ -9,16 +9,16 @@ export const databaseProviders = [
     useFactory: async () => {
       const sequelize = new Sequelize({
         dialect: 'mysql',
-        host: '127.0.0.1',
+        host: env.DB_HOST,
         port: 3306,
-        username: 'foo',
-        password: 'Bar123456789',
-        database: 'books',
+        username: env.DB_USER,
+        password: env.DB_PASSWORD,
+        database: env.DB_NAME,
         define: {
           timestamps: false
-      }
+        }
       });
-      sequelize.addModels([books, users ,users_roles, roles]);
+      sequelize.addModels([books, users, users_roles, roles]);
       await sequelize.sync();
       return sequelize;
     },

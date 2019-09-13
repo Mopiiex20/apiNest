@@ -22,8 +22,6 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<any> {
 
-    console.log(this.test);
-
     const user: any = await this.AUTH_REPOSITORY.findOne<users>({ where: { email: email } })
     if (!user) {
       throw new HttpException('User not found', 404);
@@ -32,7 +30,7 @@ export class AuthService {
     const matchPasswords = await bcrypt.compare(password, user.dataValues.password);
     if (user && matchPasswords) {
       return user.dataValues;
-    } else throw new UnauthorizedException;
+    } else throw new HttpException('Email or password incorrect', 401);;
 
   }
 
@@ -51,25 +49,18 @@ export class AuthService {
       });
     }))
 
-    console.log(permissions);
-
-
-    const isAdmin: boolean = (user.roleId === 0 ? true : false);
 
     const payload = {
       username: user.email,
       firstName: user.firstName,
       age: user.age,
-      avatar: user.avatar,
       permissions: permissions,
       id: user.id
     };
-    console.log(payload);
     const access_token = await jwtr.sign(payload, "secret")
-    console.log(access_token);
 
     return {
-      data: access_token
+      token: access_token
     };
   }
 

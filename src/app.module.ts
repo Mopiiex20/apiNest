@@ -7,7 +7,7 @@ import { booksProviders } from './books/books.providers';
 
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
-import { usersProviders, rolesProviders } from './users/users.providers';
+import { usersProviders, rolesProviders , usersrolesProviders} from './users/users.providers';
 
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
@@ -38,7 +38,8 @@ import { ConfigModule } from './config/config.module';
     ...usersProviders,
     AuthService,
     ...authProviders,
-    ...rolesProviders
+    ...rolesProviders,
+    ...usersrolesProviders
   ]
 }
 )
