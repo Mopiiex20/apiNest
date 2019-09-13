@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { users, users_roles, roles } from './users.entity';
 import * as bcrypt from "bcrypt"
 import * as jwt from "jwt-then";
@@ -20,7 +20,7 @@ export class UsersService {
 
   ) { }
 
-  async findAll(res): Promise<users[]> {
+  async findAll(res): Promise<any> {
     try {
       const users: any = await this.USERS_REPOSITORY.findAll<users>({
         include: [roles]
@@ -31,20 +31,13 @@ export class UsersService {
           users
         });
       } else {
-        return res.status(404).send({
-          success: false,
-          message: 'Users not found',
-          data: null
-        });
+        return new NotFoundException
       }
     } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: err
-      });
+      throw new InternalServerErrorException
     }
   }
-  async findOne(req, res): Promise<users[]> {
+  async findOne(req, res): Promise<any> {
     try {
       const user = await this.USERS_REPOSITORY.findOne<users>({ attributes: ['id', 'firstName', 'age', 'email'], where: { id: req.params.id } });
       if (user) {
@@ -53,22 +46,15 @@ export class UsersService {
           user
         });
       } else {
-        return res.status(404).send({
-          success: false,
-          message: 'User not found',
-          data: null
-        });
+        return new NotFoundException
 
       }
     } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: err
-      });
+      throw new InternalServerErrorException
     }
   }
 
-  async getAvatar(req, res): Promise<users[]> {
+  async getAvatar(req, res): Promise<any> {
     try {
       const users: any = await this.USERS_REPOSITORY.findOne<users>({ attributes: ['avatar'], where: { id: req.params.id } });
       const avatar = users.dataValues.avatar
@@ -78,18 +64,11 @@ export class UsersService {
           avatar
         });
       } else {
-        return res.status(404).send({
-          success: false,
-          message: 'Users not found',
-          data: null
-        });
+        return new NotFoundException
 
       }
     } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: err
-      });
+      throw new InternalServerErrorException
     }
   }
 
@@ -104,18 +83,11 @@ export class UsersService {
           message: 'Delete is done'
         });
       } else {
-        return res.status(404).send({
-          success: false,
-          message: 'User not found',
-          data: null
-        });
+        return new NotFoundException
 
       }
     } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: err
-      });
+      throw new InternalServerErrorException
     }
   }
 
@@ -133,18 +105,11 @@ export class UsersService {
           message: 'Update is done'
         });
       } else {
-        return res.status(404).send({
-          success: false,
-          message: 'User not found',
-          data: null
-        });
+        return new NotFoundException
 
       }
     } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: err
-      });
+      throw new InternalServerErrorException
     }
   }
 
@@ -175,16 +140,10 @@ export class UsersService {
           success: true,
           message: "User Successfully created"
         });
-      } else return res.status(401).send({
-        success: false,
-        message: `User with E-mail:${matchUser.email} alredy exist!`
-      });
+      } else return new UnauthorizedException
 
     } catch (err) {
-      res.status(500).send({
-        success: false,
-        message: 'Register failed try again!'
-      });
+      throw new InternalServerErrorException
     }
   }
 }

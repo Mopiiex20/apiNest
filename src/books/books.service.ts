@@ -1,6 +1,5 @@
-import { Injectable, Inject, HttpException } from '@nestjs/common';
+import { Injectable, Inject, HttpException, BadRequestException } from '@nestjs/common';
 import { books } from './books.entity';
-import { Response } from 'express';
 
 
 @Injectable()
@@ -32,7 +31,7 @@ export class BooksService {
 
       return new HttpException('Add is done', 200);
 
-    } else return "Requset body  is incorrect!"
+    } else return new BadRequestException()
 
   }
 
@@ -43,7 +42,7 @@ export class BooksService {
 
       return new HttpException('Add is done', 200);
 
-    } else return "Requset body  is incorrect!"
+    } else new BadRequestException()
 
   }
 
@@ -77,7 +76,7 @@ export class BooksService {
 
       return new HttpException('Add is done', 201);
 
-    } else return "Requset body  is incorrect!"
+    } else new BadRequestException()
 
   }
 
