@@ -5,6 +5,7 @@ import * as cors from 'cors';
 import * as helmet from 'helmet';
 import * as morgan from 'morgan';
 import conf from './config/config'
+import { ExceptionHandlerFilter } from './helper/error-handler';
 
 async function bootstrap() {
 
@@ -15,10 +16,10 @@ async function bootstrap() {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(helmet());
+  app.useGlobalFilters(new ExceptionHandlerFilter());
 
-
-  await app.listen(conf.PORT);
-  console.log(`Server is leasning on PORT  :  ${conf.PORT}`);
+  await app.listen(conf.Production.PORT);
+  console.log(`Server is leasning on PORT  :  ${conf.Production.PORT}`);
 
 }
 bootstrap();

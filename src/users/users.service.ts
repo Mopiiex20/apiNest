@@ -1,8 +1,7 @@
 import { Injectable, Inject, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { users, users_roles, roles } from './users.entity';
 import * as bcrypt from "bcrypt"
-import * as jwt from "jwt-then";
-import { IsEmail } from 'sequelize-typescript';
+
 
 interface User {
   email: string,

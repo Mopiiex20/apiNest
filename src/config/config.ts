@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 export default {
+    Production:{
     PORT: process.env.PORT || 4201,
     DB_DIALECT: process.env.DB_DIALECT || 'mysql',
     DB_HOST: process.env.DB_HOST,
@@ -13,4 +14,5 @@ export default {
     JWT_ENCRYPTION: process.env.JWT_ENCRYPTION || "jwt_please_change",
     JWT_EXPIRATION: process.env.JWT_EXPIRATION || "1h",
     SALT_ROUNDS: process.env.SALT_ROUNDS || 10
+    }
 };
