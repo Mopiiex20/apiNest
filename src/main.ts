@@ -20,6 +20,5 @@ async function bootstrap() {
 
   await app.listen(conf.Production.PORT);
   console.log(`Server is leasning on PORT  :  ${conf.Production.PORT}`);
-
 }
 bootstrap();
